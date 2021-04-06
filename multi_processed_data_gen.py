@@ -26,7 +26,8 @@ def multiprocess_data_gen(num_workers_in, number_of_data_in):
     m = Manager()
     result_queue = m.Queue()
     pool.starmap(work, [(number_of_works, result_queue) for _ in range(num_workers_in)])
-
+    pool.close()
+    pool.join()
     return result_queue
 
 
