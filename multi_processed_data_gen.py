@@ -1,47 +1,65 @@
+import argparse
 import numpy as np
 import pandas as pd
 import os
 from data_gen import uni_data_generator
-from multiprocessing import Process, Queue
+from multiprocessing import Pool, Manager
+
+# parsing user input option
+parser = argparse.ArgumentParser(description='Data generator')
+parser.add_argument('--num_workers', type=int,
+                    default=60, help='num workers')
+parser.add_argument('--num_data', type=int,
+                    default=300000, help='num data')
+args = parser.parse_args()
 
 
-def work(id, number_of_loops, result_queue):
+def work(number_of_loops, result_queue):
     work_result = uni_data_generator(number_of_loops, True)
     result_queue.put(work_result)
     return
 
 
 def multiprocess_data_gen(num_workers_in, number_of_data_in):
-    workers = []
     number_of_works = int(number_of_data_in/num_workers_in)
-    workers_index = np.arange(num_workers_in)
-    result = Queue()
+    pool = Pool(num_workers_in)
+    m = Manager()
+    result_queue = m.Queue()
+    pool.starmap(work, [(number_of_works, result_queue) for _ in range(num_workers_in)])
 
-    for thread_id in workers_index:
-        worker = Process(target=work, args=(thread_id, number_of_works, result))
-        workers.append(worker)
-        worker.start()
-
-    for worker in workers:
-        worker.join()
-
-    return result
+    return result_queue
 
 
 if __name__ == "__main__":
-    num_workers = 60
-    number_of_data = 300000
+    num_workers = args.num_workers
+    number_of_data = args.num_data
     if os.path.exists('kf_train.csv') is False:
         # train data
         data = multiprocess_data_gen(num_workers, number_of_data)
-        data = np.array(data)
-        df = pd.DataFrame(data[:, :-1])
+        data.put("stop")
+        res = []
+        while True:
+            data_piece = data.get()
+            if data_piece == "stop":
+                break
+            else:
+                res = res + data_piece
+        res = np.array(res)
+        df = pd.DataFrame(res[:, :-1])
         df.to_csv('kf_train.csv', header=False, index=False)
         print("Train data generation complete")
     if os.path.exists('kf_val.csv') is False:
         # validation data
-        data = multiprocess_data_gen(num_workers, number_of_data)
-        data = np.array(data)
-        df = pd.DataFrame(data[:, :-1])
-        df.to_csv('kf_train.csv', header=False, index=False)
-        print("Train data generation complete")
+        data = multiprocess_data_gen(num_workers, int(number_of_data/10))
+        data.put("stop")
+        res = []
+        while True:
+            data_piece = data.get()
+            if data_piece == "stop":
+                break
+            else:
+                res = res + data_piece
+        res = np.array(res)
+        df = pd.DataFrame(res[:, :-1])
+        df.to_csv('kf_val.csv', header=False, index=False)
+        print("validation data generation complete")
