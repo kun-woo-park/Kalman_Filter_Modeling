@@ -60,12 +60,12 @@ if __name__ == "__main__":
         data_val, _, _ = data_normalize(data_val, int(num_of_features)*5)
 
     # load train, validation dataset
-    train_dataset = CustomDataset(data_train, num_of_features*5)
+    train_dataset = CustomDataset(data_train, int(num_of_features)*5)
     train_loader = DataLoader(dataset=train_dataset, pin_memory=True,
                               batch_size=batch_size,
                               shuffle=True,
                               num_workers=60, drop_last=True)
-    val_dataset = CustomDataset(data_val, num_of_features*5)
+    val_dataset = CustomDataset(data_val, int(num_of_features)*5)
     val_loader = DataLoader(dataset=val_dataset, pin_memory=True,
                             batch_size=batch_size,
                             shuffle=True,
