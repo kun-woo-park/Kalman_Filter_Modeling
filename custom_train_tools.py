@@ -125,7 +125,7 @@ def train_model(num_layers, nodes, in_nodes, total_epoch, lr, train_loader, val_
             optimizer, t_0, eta_min=0, last_epoch=-1)
         sch_step = 0
     else:
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
 
     saving_path = "./res_model/"
     trn_loss_list = []  # list for saving train loss
