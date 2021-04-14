@@ -111,11 +111,7 @@ def data_gen():
         azim_p = azim
         daz_p = daz
         hdot_cmd = 0
-        hdot = 0
-        gamma = gamma0
         count_change_hdot = 0
-        err = 0
-        vc0 = vc
         
         # save several length of radar data
         radar_data = deque(maxlen=number_of_radar_samples)
@@ -242,7 +238,7 @@ def data_gen():
         hdot_cmd = 2
         
     radar_data = list(chain.from_iterable(radar_data))
-    return_data = radar_data + [r, vc0, los, daz, dlos, hdot_cmd]    
+    return_data = radar_data + [r, vc, los, daz, dlos, hdot_cmd]
     return return_data
 
 
@@ -276,14 +272,14 @@ def uni_data_generator(num_of_data, multiprocess = False):
 
 if __name__ == "__main__":
     if os.path.exists('kf_train.csv') is False:
-        ## train data
+        # train data
         data = uni_data_generator(300000)
         data = np.array(data)
         df = pd.DataFrame(data[:, :-1])
         df.to_csv('kf_train.csv', header=False, index=False)
         print("Train data generation complete")
     if os.path.exists('kf_val.csv') is False:
-        ## validation data
+        # validation data
         data = uni_data_generator(30000)
         data = np.array(data[:])
         df = pd.DataFrame(data[:, :-1])
