@@ -14,6 +14,8 @@ parser.add_argument('--batch_size', type=int, default=512, help='batch size')
 parser.add_argument('--number_of_epoch', type=int, default=300, help='train epoch')
 parser.add_argument('--number_of_features', type=str, default="100", help='number of input features')
 parser.add_argument('--lr', type=float, default=0.01, help='learning rate')
+parser.add_argument('--custom_lr_schedule', type=bool, default=False, help='using custom lr scheduler')
+parser.add_argument('--noise', type=bool, default=True, help='using noise or not')
 parser.add_argument('--index', type=int, default=0, help='index(gpu number)')
 args = parser.parse_args()
 
@@ -33,29 +35,35 @@ if __name__ == "__main__":
     nodes = args.num_nodes
     num_of_features = args.number_of_features
     in_nodes = int(num_of_features)*5
+    custom_lr_schedule = args.custom_lr_schedule
     idx = args.index
+    noise = args.noise
 
     # setting saving name of logfile, image and model weight
-    model_char = "{}_{}_{}_{}_{}_{}_{}_no_noise_".format(
-        nodes[0], nodes[1], nodes[2], num_layers[0], num_layers[1], num_layers[2], idx) + num_of_features
+    if noise:
+        file_name = "_noised"
+    else:
+        file_name = ""
+    model_char = "{}_{}_{}_{}_{}_{}_{}_".format(
+        nodes[0], nodes[1], nodes[2], num_layers[0], num_layers[1], num_layers[2], idx) + num_of_features + file_name
 
     # setting log file path and system logger
     log_file = './res_log/' + model_char + '.txt'
     system_logger = system_log(log_file)
 
-    if (os.path.exists("mean_" + num_of_features + ".npy") and os.path.exists(
-            "std_" + num_of_features + ".npy")) is False:
-        data_train = np.loadtxt("kf_train_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
-        data_val = np.loadtxt("kf_val_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
+    if (os.path.exists("mean_noised_" + num_of_features + ".npy") and os.path.exists(
+            "std_noised_" + num_of_features + ".npy")) is False:
+        data_train = np.loadtxt("kf_train" + file_name + "_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
+        data_val = np.loadtxt("kf_val" + file_name + "_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
         data_train, mean, std = data_normalize(data_train, int(num_of_features)*5)
         data_val, _, _ = data_normalize(data_val, int(num_of_features)*5)
-        np.save("mean_" + num_of_features + ".npy", mean)
-        np.save("std_" + num_of_features + ".npy", std)
+        np.save("mean" + file_name + "_" + num_of_features + ".npy", mean)
+        np.save("std" + file_name + "_" + num_of_features + ".npy", std)
     else:
-        mean = np.load("mean_" + num_of_features + ".npy").tolist()
-        std = np.load("std_" + num_of_features + ".npy").tolist()
-        data_train = np.loadtxt("kf_train_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
-        data_val = np.loadtxt("kf_val_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
+        mean = np.load("mean" + file_name + "_" + num_of_features + ".npy").tolist()
+        std = np.load("std" + file_name + "_" + num_of_features + ".npy").tolist()
+        data_train = np.loadtxt("kf_train" + file_name + "_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
+        data_val = np.loadtxt("kf_val" + file_name + "_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
         data_train, _, _ = data_normalize(data_train, int(num_of_features)*5)
         data_val, _, _ = data_normalize(data_val, int(num_of_features)*5)
 
