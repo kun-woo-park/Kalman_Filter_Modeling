@@ -45,7 +45,7 @@ if __name__ == "__main__":
     else:
         file_name = ""
     model_char = "{}_{}_{}_{}_{}_{}_{}_".format(
-        nodes[0], nodes[1], nodes[2], num_layers[0], num_layers[1], num_layers[2], idx) + num_of_features + file_name
+        nodes[0], nodes[1], nodes[2], num_layers[0], num_layers[1], num_layers[2], idx) + "_" + num_of_features + file_name
 
     # setting log file path and system logger
     log_file = './res_log/' + model_char + '.txt'
