@@ -11,21 +11,23 @@ parser.add_argument('--num_workers', type=int,
                     default=60, help='num workers')
 parser.add_argument('--num_data', type=int,
                     default=300000, help='num data')
+parser.add_argument('--noised', type=bool,
+                    default=True, help='noise for data')
 args = parser.parse_args()
 
 
-def work(number_of_loops, result_queue):
-    work_result = uni_data_generator(number_of_loops, True)
+def work(number_of_loops, result_queue, noised):
+    work_result = uni_data_generator(number_of_loops, True, noised)
     result_queue.put(work_result)
     return
 
 
-def multiprocess_data_gen(num_workers_in, number_of_data_in):
+def multiprocess_data_gen(num_workers_in, number_of_data_in, noised):
     number_of_works = int(number_of_data_in/num_workers_in)
     pool = Pool(num_workers_in)
     m = Manager()
     result_queue = m.Queue()
-    pool.starmap(work, [(number_of_works, result_queue) for _ in range(num_workers_in)])
+    pool.starmap(work, [(number_of_works, result_queue, noised) for _ in range(num_workers_in)])
     pool.close()
     pool.join()
     return result_queue
@@ -34,9 +36,14 @@ def multiprocess_data_gen(num_workers_in, number_of_data_in):
 if __name__ == "__main__":
     num_workers = args.num_workers
     number_of_data = args.num_data
-    if os.path.exists('kf_train_{}_100.csv'.format(number_of_data)) is False:
+    noise = args.noised
+    if noise:
+        file_name = "noised"
+    else:
+        file_name = ""
+    if os.path.exists("kf_train_"+file_name+"_100.csv") is False:
         # train data
-        data = multiprocess_data_gen(num_workers, number_of_data)
+        data = multiprocess_data_gen(num_workers, number_of_data, noise)
         data.put("stop")
         res = []
         while True:
@@ -47,11 +54,11 @@ if __name__ == "__main__":
                 res = res + data_piece
         res = np.array(res)
         df = pd.DataFrame(res[:, :-1])
-        df.to_csv('kf_train_{}_100.csv'.format(number_of_data), header=False, index=False)
+        df.to_csv("kf_train_"+file_name+"_100.csv", header=False, index=False)
         print("Train data generation complete")
-    if os.path.exists('kf_val_{}_100.csv'.format(number_of_data)) is False:
+    if os.path.exists("kf_val_"+file_name+"_100.csv") is False:
         # validation data
-        data = multiprocess_data_gen(num_workers, int(number_of_data/10))
+        data = multiprocess_data_gen(num_workers, int(number_of_data/10), noise)
         data.put("stop")
         res = []
         while True:
@@ -62,5 +69,5 @@ if __name__ == "__main__":
                 res = res + data_piece
         res = np.array(res)
         df = pd.DataFrame(res[:, :-1])
-        df.to_csv('kf_val_{}_100.csv', header=False, index=False)
+        df.to_csv("kf_val_"+file_name+"_100.csv", header=False, index=False)
         print("validation data generation complete")

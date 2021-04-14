@@ -34,10 +34,9 @@ def model(z, t, hdot_cmd):                          # computes state derivatives
     return np.array([adot, addot, hdot, hddot, Rdot])
 
 
-def data_gen():
-
-    dt = 0.1              # control frequency
-    tf = 30               # final time
+def data_gen(noised=True):
+    dt = 0.1  # control frequency
+    tf = 20  # final time
     t = np.arange(0, tf, dt)
     stop_point = random.randrange(number_of_radar_samples, len(t))
     N = len(t)
@@ -165,11 +164,17 @@ def data_gen():
             min_dist_horiz = r*r/vc*daz
 
             # estimate cruise distance
-            dist_cruise = r*los
-            
-            # save radar data with noise
-            radar_data.append([theta, elev, azim,
-                               r, vc])
+            dist_cruise = r * los
+
+            if noised:
+                # save radar data with noise
+                radar_data.append([theta + np.random.randn() * Deg2Rad, elev + np.random.randn() * Deg2Rad,
+                                   azim + np.random.randn() * Deg2Rad,
+                                   r + 0.01 * r * np.random.randn(), vc + 0.001 * r * np.random.randn()])
+            else:
+                # save radar data with noise
+                radar_data.append([theta, elev,
+                                   azim, r, vc])
 
             ##############################################################################
             # COMPUTE ACTION (BEGIN)
@@ -232,7 +237,7 @@ def data_gen():
     return return_data
 
 
-def uni_data_generator(num_of_data, multiprocess=False):
+def uni_data_generator(num_of_data, multiprocess=False, noised=True):
     data = []
     each_num = num_of_data/3
     all_feat = 0
@@ -240,7 +245,7 @@ def uni_data_generator(num_of_data, multiprocess=False):
     stay = 0
     up = 0
     while all_feat < 3:
-        temp = data_gen()
+        temp = data_gen(noised)
         if temp[-1] == 0 and down < each_num:
             data.append(temp)
             down += 1
