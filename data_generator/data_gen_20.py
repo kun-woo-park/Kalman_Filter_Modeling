@@ -56,7 +56,7 @@ def data_gen(noised=True):
                       )  # initial state vector
 
         # target initial conditions
-        ht0 = 1000 + 200 * np.random.randn()
+        ht0 = 1000 + 50 * np.random.randn()
         Vt = 200
         approach_angle = 50 * Deg2Rad * (2 * np.random.rand() - 1)
         psi0 = np.pi + approach_angle + 2 * np.random.randn() * Deg2Rad
