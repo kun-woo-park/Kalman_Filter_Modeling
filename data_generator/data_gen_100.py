@@ -56,14 +56,14 @@ def data_gen(noised=True):
                       )       # initial state vector
 
         # target initial conditions
-        ht0 = 1000 + 200*np.random.randn()
+        ht0 = 1000 + 50*np.random.randn()
         Vt = 200
         approach_angle = 50*Deg2Rad*(2*np.random.rand()-1)
         psi0 = np.pi + approach_angle + 2*np.random.randn()*Deg2Rad
         psi0 = np.arctan2(np.sin(psi0), np.cos(psi0))
 
-        Pt_N = 3000*(1+np.cos(approach_angle))
-        Pt_E = 3000*np.sin(approach_angle)
+        Pt_N = 4000*(1+np.cos(approach_angle))
+        Pt_E = 4000*np.sin(approach_angle)
         Pt_D = -ht0
         # initial NED position
         Pt_NED = np.array([Pt_N, Pt_E, Pt_D])
@@ -168,9 +168,10 @@ def data_gen(noised=True):
 
             if noised:
                 # save radar data with noise
-                radar_data.append([theta + np.random.randn() * Deg2Rad, elev + np.random.randn() * Deg2Rad,
+                radar_data.append([theta + np.random.randn() * Deg2Rad, 
+                                   elev + np.random.randn() * Deg2Rad,
                                    azim + np.random.randn() * Deg2Rad,
-                                   r + 0.01 * r * np.random.randn(), vc + 0.001 * r * np.random.randn()])
+                                   r + 0.1 * r * np.random.randn(), vc + 0.001 * r * np.random.randn()])
             else:
                 # save radar data with noise
                 radar_data.append([theta, elev,
