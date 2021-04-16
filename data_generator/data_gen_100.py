@@ -168,9 +168,9 @@ def data_gen(noised=True):
 
             if noised:
                 # save radar data with noise
-                radar_data.append([theta + 12e-8 * r * np.random.randn() * Deg2Rad, 
-                                   elev + 5e-4 * r * np.random.randn() * Deg2Rad,
-                                   azim + 1e-4 * r * np.random.randn() * Deg2Rad,
+                radar_data.append([theta + np.random.randn() * Deg2Rad, 
+                                   elev + np.random.randn() * Deg2Rad,
+                                   azim + np.random.randn() * Deg2Rad,
                                    r + 0.1 * r * np.random.randn(), vc + 0.001 * r * np.random.randn()])
             else:
                 # save radar data with noise

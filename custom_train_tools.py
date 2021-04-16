@@ -35,11 +35,11 @@ def system_log(log_file):  # define system logger
     return system_logger
 
 
-class CustomDataset(Dataset):  # define custom dataset (x: r, vc, los, daz, dlos), (y: hcmd)
+class CustomDataset(Dataset):  # define custom dataset (x: theta, elev, azim, r, vc), (y: r, vc, los, daz, dlos)
     def __init__(self, xy, num_of_features):
         self.len = xy.shape[0]
         self.x_data = torch.tensor(xy[:, :num_of_features])
-        self.y_data = torch.tensor(xy[:, num_of_features:])
+        self.y_data = torch.tensor(xy[:, num_of_features:-1])
 
     def __getitem__(self, index):
         return self.x_data[index], self.y_data[index]
@@ -48,7 +48,7 @@ class CustomDataset(Dataset):  # define custom dataset (x: r, vc, los, daz, dlos
         return self.len
 
 
-class FcLayer(nn.Module):  # define fully connected layer with Leaky ReLU activation function
+class FcLayer(nn.Module):                                       # define fully connected class for model load
     def __init__(self, in_nodes, nodes):
         super(FcLayer, self).__init__()
         self.fc = nn.Linear(in_nodes, nodes)
@@ -62,9 +62,23 @@ class FcLayer(nn.Module):  # define fully connected layer with Leaky ReLU activa
         return out
 
 
-class WaveNET(nn.Module):  # define custom model named wave net, which was coined after seeing the nodes sway
+class FcLayerBn(nn.Module):  # define fully connected layer with Leaky ReLU activation function(for residual network)
+    def __init__(self, in_nodes, nodes):
+        super(FcLayerBn, self).__init__()
+        self.fc = nn.Linear(in_nodes, nodes)
+        self.bn1 = nn.BatchNorm1d(nodes)
+        self.act = nn.LeakyReLU(0.2, inplace=True)
+
+    def forward(self, x):
+        out = self.fc(x)
+        out = self.bn1(out)
+        out = self.act(out)
+        return out
+
+
+class WaveResNET(nn.Module):  # define custom model named wave net, which was coined after seeing the nodes sway(use residual to train)
     def __init__(self, block, planes, nodes, out_nodes=5, in_nodes=500):
-        super(WaveNET, self).__init__()
+        super(WaveResNET, self).__init__()
         self.in_nodes = in_nodes
 
         self.down_sample1 = self.down_sample(nodes[0])
@@ -114,7 +128,7 @@ class WaveNET(nn.Module):  # define custom model named wave net, which was coine
 def train_model(num_layers, nodes, in_nodes, total_epoch, lr, train_loader, val_loader, model_char,
                 system_logger, custom_lr_schedule=True):  # Function for train model
 
-    model = WaveNET(FcLayer, num_layers, nodes, in_nodes=in_nodes).to(device)
+    model = WaveResNET(FcLayerBn, num_layers, nodes, in_nodes=in_nodes).to(device)
     criterion = nn.MSELoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-6)
     if custom_lr_schedule:
@@ -155,7 +169,6 @@ def train_model(num_layers, nodes, in_nodes, total_epoch, lr, train_loader, val_
         # validation
         with torch.no_grad():
             val_loss = 0.0
-            cor_match = 0
             for j, val in enumerate(val_loader):
                 val_x, val_label = val
                 val_x = val_x.to(device)

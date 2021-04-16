@@ -9,9 +9,9 @@ parser = argparse.ArgumentParser(description='Train Implementation')
 parser.add_argument('--num_layers', nargs='+', type=int,
                     default=[2, 8, 3], help='num layers')
 parser.add_argument('--num_nodes', nargs='+', type=int,
-                    default=[100, 800, 1600], help='num nodes')
+                    default=[500, 800, 1600], help='num nodes')
 parser.add_argument('--batch_size', type=int, default=512, help='batch size')
-parser.add_argument('--number_of_epoch', type=int, default=300, help='train epoch')
+parser.add_argument('--number_of_epoch', type=int, default=1000, help='train epoch')
 parser.add_argument('--number_of_features', type=str, default="100", help='number of input features')
 parser.add_argument('--lr', type=float, default=0.01, help='learning rate')
 parser.add_argument('--custom_lr_schedule', type=bool, default=False, help='using custom lr scheduler')

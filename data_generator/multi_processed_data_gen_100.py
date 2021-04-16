@@ -53,7 +53,7 @@ if __name__ == "__main__":
             else:
                 res = res + data_piece
         res = np.array(res)
-        df = pd.DataFrame(res[:, :-1])
+        df = pd.DataFrame(res)
         df.to_csv("kf_train_"+file_name+"_100.csv", header=False, index=False)
         print("Train data generation complete")
     if os.path.exists("kf_val_"+file_name+"_100.csv") is False:
@@ -68,6 +68,6 @@ if __name__ == "__main__":
             else:
                 res = res + data_piece
         res = np.array(res)
-        df = pd.DataFrame(res[:, :-1])
+        df = pd.DataFrame(res)
         df.to_csv("kf_val_"+file_name+"_100.csv", header=False, index=False)
         print("validation data generation complete")
