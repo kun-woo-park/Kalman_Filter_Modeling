@@ -36,7 +36,7 @@ def model(z, t, hdot_cmd):                          # computes state derivatives
 
 def data_gen(noised=True):
     dt = 0.1  # control frequency
-    tf = 30  # final time
+    tf = 40  # final time
     t = np.arange(0, tf, dt)
     stop_point = random.randrange(number_of_radar_samples, len(t))
     N = len(t)
@@ -171,7 +171,7 @@ def data_gen(noised=True):
                 radar_data.append([theta + np.random.randn() * Deg2Rad, 
                                    elev + np.random.randn() * Deg2Rad,
                                    azim + np.random.randn() * Deg2Rad,
-                                   r + 0.1 * r * np.random.randn(), vc + 0.001 * r * np.random.randn()])
+                                   r + 0.01 * r * np.random.randn(), vc + 0.001 * r * np.random.randn()])
             else:
                 # save radar data with noise
                 radar_data.append([theta, elev,
