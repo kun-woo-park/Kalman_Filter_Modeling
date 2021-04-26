@@ -14,8 +14,8 @@ parser.add_argument('--batch_size', type=int, default=512, help='batch size')
 parser.add_argument('--number_of_epoch', type=int, default=1000, help='train epoch')
 parser.add_argument('--number_of_features', type=str, default="100", help='number of input features')
 parser.add_argument('--lr', type=float, default=0.01, help='learning rate')
-parser.add_argument('--custom_lr_schedule', type=bool, default=False, help='using custom lr scheduler')
-parser.add_argument('--noise', type=bool, default=True, help='using noise or not')
+parser.add_argument('--custom_lr_schedule', type=lambda s: s.lower() in ["true", 1], default=False, help='using custom lr scheduler')
+parser.add_argument('--noise', type=lambda s: s.lower() in ["true", 1], default=True, help='using noise or not')
 parser.add_argument('--index', type=int, default=0, help='index(gpu number)')
 args = parser.parse_args()
 
@@ -51,8 +51,8 @@ if __name__ == "__main__":
     log_file = './res_log/' + model_char + '.txt'
     system_logger = system_log(log_file)
 
-    if (os.path.exists("mean_noised_" + num_of_features + ".npy") and os.path.exists(
-            "std_noised_" + num_of_features + ".npy")) is False:
+    if (os.path.exists("mean" + file_name + "_" + num_of_features + ".npy") and os.path.exists(
+            "std" + file_name + "_" + num_of_features + ".npy")) is False:
         data_train = np.loadtxt("kf_train" + file_name + "_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
         data_val = np.loadtxt("kf_val" + file_name + "_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
         data_train, mean, std = data_normalize(data_train, int(num_of_features)*5)
