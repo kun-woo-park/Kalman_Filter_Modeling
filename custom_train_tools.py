@@ -48,20 +48,6 @@ class CustomDataset(Dataset):  # define custom dataset (x: theta, elev, azim, r,
         return self.len
 
 
-class FcLayer(nn.Module):                                       # define fully connected class for model load
-    def __init__(self, in_nodes, nodes):
-        super(FcLayer, self).__init__()
-        self.fc = nn.Linear(in_nodes, nodes)
-        self.bn1 = nn.BatchNorm1d(nodes)
-        self.act = nn.LeakyReLU(0.2, inplace=True)
-
-    def forward(self, x):
-        out = self.fc(x)
-        out = self.bn1(out)
-        out = self.act(out)
-        return out
-
-
 class FcLayerBn(nn.Module):  # define fully connected layer with Leaky ReLU activation function(for residual network)
     def __init__(self, in_nodes, nodes):
         super(FcLayerBn, self).__init__()
