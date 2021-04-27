@@ -155,9 +155,9 @@ def data_gen(noised=True):
             los = theta - elev
 
             # real rate of LOS
-            dlos = (Pr_NED[0] * Vr_NED[2] - Pr_NED[2] * Vr_NED[0])/(Pr_NED[0]**2 + Pr_NED[2]**2 + Pr_NED[1]**2)
+            dlos = (Pr_NED[2] * Vr_NED[0] - Pr_NED[0] * Vr_NED[2])/(Pr_NED[0]**2 + Pr_NED[2]**2 + Pr_NED[1]**2)
             # real rate of azim
-            daz = (Pr_NED[0] * Vr_NED[1] - Pr_NED[1] * Vr_NED[0])/(Pr_NED[0]**2 + Pr_NED[1]**2 + Pr_NED[2]**2)
+            daz = (Pr_NED[1] * Vr_NED[0] - Pr_NED[0] * Vr_NED[1])/(Pr_NED[0]**2 + Pr_NED[1]**2 + Pr_NED[2]**2)
 
             # estimate closest approach
             min_dist_vert = r*r/vc*dlos

@@ -11,7 +11,7 @@ parser.add_argument('--num_workers', type=int,
                     default=60, help='num workers')
 parser.add_argument('--num_data', type=int,
                     default=300000, help='num data')
-parser.add_argument('--noised', type=lambda s: s.lower in ["true", 1],
+parser.add_argument('--noised', type=lambda s: s.lower() in ["true", 1],
                     default=True, help='noise for data')
 args = parser.parse_args()
 
