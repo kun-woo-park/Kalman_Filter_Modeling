@@ -2,7 +2,7 @@ import argparse
 import os
 import numpy as np
 from torch.utils.data import DataLoader
-from custom_train_tools import CustomDataset, train_model, system_log, data_normalize
+from custom_train_tools_no_bn import CustomDataset, train_model, system_log, data_normalize
 
 # parsing user input option
 parser = argparse.ArgumentParser(description='Train Implementation')
