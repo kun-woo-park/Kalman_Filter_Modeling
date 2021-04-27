@@ -7,9 +7,9 @@ from custom_train_tools import CustomDataset, train_model, system_log, data_norm
 # parsing user input option
 parser = argparse.ArgumentParser(description='Train Implementation')
 parser.add_argument('--num_layers', nargs='+', type=int,
-                    default=[2, 8, 3], help='num layers')
+                    default=[2, 2, 2], help='num layers')
 parser.add_argument('--num_nodes', nargs='+', type=int,
-                    default=[500, 800, 1600], help='num nodes')
+                    default=[100, 100, 100], help='num nodes')
 parser.add_argument('--batch_size', type=int, default=512, help='batch size')
 parser.add_argument('--number_of_epoch', type=int, default=1000, help='train epoch')
 parser.add_argument('--number_of_features', type=str, default="100", help='number of input features')
