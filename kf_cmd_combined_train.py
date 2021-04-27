@@ -9,7 +9,7 @@ from custom_train_tools_for_cmd_kf_combined import FcLayer as FClayer
 parser = argparse.ArgumentParser(description='Train Implementation')
 parser.add_argument('--batch_size', type=int, default=512, help='batch size')
 parser.add_argument('--number_of_epoch', type=int, default=300, help='train epoch')
-parser.add_argument('--lr', type=float, default=0.01, help='learning rate')
+parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
 parser.add_argument('--custom_lr_schedule', type=lambda s: s.lower() in ["true", 1], default=False, help='using custom lr scheduler')
 parser.add_argument('--index', type=int, default=0, help='index(gpu number)')
 args = parser.parse_args()
