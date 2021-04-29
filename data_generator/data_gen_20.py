@@ -179,7 +179,7 @@ def data_gen(noised=True):
 
             ##############################################################################
             # COMPUTE ACTION (BEGIN)
-            if k > 3 and r > dist_sep and abs(elev) < 40*Deg2Rad and abs(azim) < 40*Deg2Rad:
+            if k > 20 and r > dist_sep and abs(elev) < 40*Deg2Rad and abs(azim) < 40*Deg2Rad:
                 if min_dist_vert > 0:
                     if min_dist_vert < dist_sep:
                         if np.abs(dist_cruise) < dist_sep:
@@ -222,7 +222,7 @@ def data_gen(noised=True):
                     # WRITE DATA
                     loop_continue = 0
                     break
-            elif k > 3:
+            elif k > 20:
                 hdot_cmd = 0
                 loop_continue = 0
                 break

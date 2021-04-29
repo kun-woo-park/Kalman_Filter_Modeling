@@ -1,19 +1,23 @@
 import argparse
 import os
 import numpy as np
+import torch
 from torch.utils.data import DataLoader
 from custom_train_tools import CustomDataset, train_model, system_log, data_normalize
+
+# fixing torch random seed
+torch.manual_seed(0)
 
 # parsing user input option
 parser = argparse.ArgumentParser(description='Train Implementation')
 parser.add_argument('--num_layers', nargs='+', type=int,
-                    default=[2, 8, 3], help='num layers')
+                    default=[2, 2, 2], help='num layers')
 parser.add_argument('--num_nodes', nargs='+', type=int,
-                    default=[500, 800, 1600], help='num nodes')
+                    default=[500, 500, 500], help='num nodes')
 parser.add_argument('--batch_size', type=int, default=512, help='batch size')
 parser.add_argument('--number_of_epoch', type=int, default=1000, help='train epoch')
-parser.add_argument('--number_of_features', type=str, default="100", help='number of input features')
-parser.add_argument('--lr', type=float, default=0.01, help='learning rate')
+parser.add_argument('--number_of_features', type=str, default="20", help='number of input features')
+parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
 parser.add_argument('--custom_lr_schedule', type=lambda s: s.lower() in ["true", 1], default=False, help='using custom lr scheduler')
 parser.add_argument('--noise', type=lambda s: s.lower() in ["true", 1], default=True, help='using noise or not')
 parser.add_argument('--index', type=int, default=0, help='index(gpu number)')
