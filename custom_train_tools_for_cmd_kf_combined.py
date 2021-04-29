@@ -180,10 +180,10 @@ class CombinedModel(nn.Module):                                 # define radar, 
 
 
 def train_model(total_epoch, lr, train_loader, val_loader, model_char,
-                system_logger, custom_lr_schedule=True):  # Function for train model
+                system_logger, model_name, custom_lr_schedule=True):  # Function for train model
 
     model_cmd = torch.load("Custom_model_cmd.pth")
-    model_radar = torch.load("Custom_model_kf.pth")
+    model_radar = torch.load(model_name)
     mean_cmd = np.load("mean_cmd.npy")
     std_cmd = np.load("std_cmd.npy")
     model = CombinedModel(model_radar, model_cmd, mean_cmd, std_cmd).to(device)
