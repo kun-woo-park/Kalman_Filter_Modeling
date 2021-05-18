@@ -266,5 +266,5 @@ def train_model(total_epoch, lr, train_loader, val_loader, model_char,
             len(train_loader), val_loss / len(val_loader)))
     # save model
     model_name = saving_path + "Custom_model_" + model_char + "_fin.pth"
-    torch.save(model, model_name)
+    torch.save(model.state_dict(), model_name)
     return model
