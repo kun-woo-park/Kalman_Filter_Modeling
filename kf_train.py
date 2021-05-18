@@ -11,9 +11,9 @@ torch.manual_seed(0)
 # parsing user input option
 parser = argparse.ArgumentParser(description='Train Implementation')
 parser.add_argument('--num_layers', nargs='+', type=int,
-                    default=[2, 2, 2], help='num layers')
+                    default=[3, 3, 3], help='num layers')
 parser.add_argument('--num_nodes', nargs='+', type=int,
-                    default=[500, 500, 500], help='num nodes')
+                    default=[1020, 2040, 4080], help='num nodes')
 parser.add_argument('--batch_size', type=int, default=512, help='batch size')
 parser.add_argument('--number_of_epoch', type=int, default=1000, help='train epoch')
 parser.add_argument('--number_of_features', type=str, default="20", help='number of input features')
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     num_layers = args.num_layers
     nodes = args.num_nodes
     num_of_features = args.number_of_features
-    in_nodes = int(num_of_features)*5
+    in_nodes = int(num_of_features)*17
     custom_lr_schedule = args.custom_lr_schedule
     idx = args.index
     noise = args.noise
@@ -61,8 +61,8 @@ if __name__ == "__main__":
             "std" + file_name + "_" + num_of_features + ".npy")) is False:
         data_train = np.loadtxt("kf_train" + file_name + "_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
         data_val = np.loadtxt("kf_val" + file_name + "_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
-        data_train, mean, std = data_normalize(data_train, int(num_of_features)*5)
-        data_val, _, _ = data_normalize(data_val, int(num_of_features)*5)
+        data_train, mean, std = data_normalize(data_train, int(num_of_features)*17)
+        data_val, _, _ = data_normalize(data_val, int(num_of_features)*17)
         np.save("mean" + file_name + "_" + num_of_features + ".npy", mean)
         np.save("std" + file_name + "_" + num_of_features + ".npy", std)
     else:
@@ -70,16 +70,16 @@ if __name__ == "__main__":
         std = np.load("std" + file_name + "_" + num_of_features + ".npy").tolist()
         data_train = np.loadtxt("kf_train" + file_name + "_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
         data_val = np.loadtxt("kf_val" + file_name + "_" + num_of_features + ".csv", delimiter=",", dtype=np.float32)
-        data_train, _, _ = data_normalize(data_train, int(num_of_features)*5)
-        data_val, _, _ = data_normalize(data_val, int(num_of_features)*5)
+        data_train, _, _ = data_normalize(data_train, int(num_of_features)*17)
+        data_val, _, _ = data_normalize(data_val, int(num_of_features)*17)
 
     # load train, validation dataset
-    train_dataset = CustomDataset(data_train, int(num_of_features)*5)
+    train_dataset = CustomDataset(data_train, int(num_of_features)*17)
     train_loader = DataLoader(dataset=train_dataset, pin_memory=True,
                               batch_size=batch_size,
                               shuffle=True,
                               num_workers=60, drop_last=True)
-    val_dataset = CustomDataset(data_val, int(num_of_features)*5)
+    val_dataset = CustomDataset(data_val, int(num_of_features)*17)
     val_loader = DataLoader(dataset=val_dataset, pin_memory=True,
                             batch_size=batch_size,
                             shuffle=True,
