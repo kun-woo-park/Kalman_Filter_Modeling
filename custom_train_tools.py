@@ -11,10 +11,10 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 def data_normalize(data, num_of_features):  # define data normalize function
-    data_reshaped = data[:, :num_of_features].reshape(-1, int(num_of_features / 5), 5)
-    mean = [np.mean(data_reshaped[:, :, i]) for i in range(5)]
-    std = [np.std(data_reshaped[:, :, i]) for i in range(5)]
-    for i in range(5):
+    data_reshaped = data[:, :num_of_features].reshape(-1, int(num_of_features / 17), 17)
+    mean = [np.mean(data_reshaped[:, :, i]) for i in range(17)]
+    std = [np.std(data_reshaped[:, :, i]) for i in range(17)]
+    for i in range(17):
         data_reshaped[:, :, i] = (data_reshaped[:, :, i] - mean[i]) / std[i]
     data[:, :num_of_features] = data_reshaped.reshape(-1, num_of_features)
 
